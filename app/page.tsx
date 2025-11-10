@@ -49,7 +49,9 @@ export default function Home() {
 
   const router = useRouter()
 
-  const api="http://127.0.0.1:8000"
+ const api = process.env.NEXT_PUBLIC_API_URL;
+
+  // const api="http://localhost:8000"
 
   useEffect(() => {
     fetch('/products.json')
@@ -119,7 +121,7 @@ export default function Home() {
     setRecommendations([]);
     setSelectedProducts([]);
     setQueryProducts([]);
-    setSearchText(''); // clear manual input
+    setSearchText(''); 
   }
 };
 
