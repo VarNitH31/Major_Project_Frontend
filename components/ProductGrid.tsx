@@ -32,7 +32,6 @@ export default function ProductGrid({
   const [visibleCount, setVisibleCount] = useState(50)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Scroll listener to load more items
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
@@ -44,18 +43,15 @@ export default function ProductGrid({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [products.length])
 
-  // Handle product selection
   const toggleSelection = (index: number, product: Product) => {
     const alreadySelected = selectedProducts.includes(index)
 
     if (alreadySelected) {
-      // Remove product
       // @ts-ignore
       setSelectedProducts(prev => prev.filter(i => i !== index))
       setQueryProducts(prev => prev.filter(p => p.index !== index))
     } else {
-        // Add product
-        // @ts-ignore
+      // @ts-ignore
       setSelectedProducts(prev => [...prev, index])
       setQueryProducts(prev => [...prev, { name: product.name, url: product.url, index }])
     }
@@ -64,7 +60,11 @@ export default function ProductGrid({
   return (
     <div
       ref={containerRef}
-      className="m-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 w-full"
+      className="
+        m-4 
+        grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 
+        gap-4 w-full
+      "
     >
       {products.slice(0, visibleCount).map((product, idx) => (
         <div className="w-full" key={idx}>

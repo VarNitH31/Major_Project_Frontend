@@ -37,8 +37,9 @@ export default function RecommendationGrid({
     setLoading(true)
     setFusionDone(false)
 
-    const fusionTime = queryProducts.length * 300 + 1800 // fusion animation duration
-    const loadTime = fusionTime + 1500 // recs load delay
+    // ⏳ SLOWER FUSION TIMING
+    const fusionTime = queryProducts.length * 450 + 2600
+    const loadTime = fusionTime + 1500
 
     const fusionTimer = setTimeout(() => {
       setFusionDone(true)
@@ -56,94 +57,108 @@ export default function RecommendationGrid({
   }, [recommendedProducts, queryProducts])
 
   return (
-    <div className="flex flex-col gap-10 text-gray-200">
-      {/* 🔹 Query products (static display) */}
+    <div className="flex flex-col gap-10 text-slate-800">
+      
+      {/* 🔹 Query products */}
       <section>
-        <h2 className="text-lg font-semibold mb-3 text-slate-300">
+        <h2 className="text-lg font-semibold mb-3 text-slate-700">
           Your Selected Products
         </h2>
+
         <div className="flex flex-col gap-4">
           {queryProducts.map((product, idx) => (
             <div
               key={`query-${idx}`}
-              className="flex items-center gap-4 p-3 rounded-lg bg-slate-800 border border-slate-700"
+              className="
+                flex items-center gap-4 p-3 rounded-lg 
+                bg-white border border-[#E2E8F0] shadow-sm
+              "
             >
               <img
                 src={product.url}
                 alt={product.name}
-                className="w-20 h-20 object-cover rounded-md border border-slate-600"
+                className="w-20 h-20 object-cover rounded-md border border-[#E2E8F0]"
               />
-              <p className="text-base font-medium">{product.name}</p>
+              <p className="text-base font-medium text-slate-800">
+                {product.name}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 🔹 Fusion bar animation */}
-      {!fusionDone && 
-      <section className="relative">
-        <h2 className="text-lg font-semibold mb-2 mt-4 text-slate-300">
-          Fusing Knowledge...
-        </h2>
+      {/* 🔹 Fusion animation */}
+      {!fusionDone && (
+        <section className="relative">
+          <h2 className="text-lg font-semibold mb-2 mt-4 text-slate-700">
+            Fusing Knowledge...
+          </h2>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="relative w-full h-[70px] flex items-center justify-center overflow-hidden rounded-md border border-slate-600 bg-slate-900"
-        >
-          {queryProducts.map((product, idx) => (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 1 }}
+            className="
+              relative w-full h-[70px] flex items-center justify-center 
+              overflow-hidden rounded-md
+              border border-[#E2E8F0] bg-white shadow-sm
+            "
+          >
+            {queryProducts.map((product, idx) => (
+              <motion.div
+                key={`fusion-${idx}`}
+                initial={{
+                  x: idx % 2 === 0 ? -250 : 250,
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{
+                  x: 0,
+                  opacity: [0, 1, 1, 0],
+                  scale: [1, 1.25, 0.9, 0.6],
+                }}
+
+                // ⏳ SLOWER, SMOOTHER TRANSITIONS
+                transition={{
+                  delay: 0.5 + idx * 0.45,
+                  duration: 2.4,
+                  ease: 'easeInOut',
+                }}
+
+                className="absolute flex items-center justify-center gap-2"
+              >
+                <img
+                  src={product.url}
+                  alt={product.name}
+                  className="w-10 h-10 object-cover rounded-md border border-[#E2E8F0]"
+                />
+                <p className="text-sm font-medium text-slate-700">
+                  {product.name}
+                </p>
+              </motion.div>
+            ))}
+
+            {/* Fusion glow */}
             <motion.div
-              key={`fusion-${idx}`}
-              initial={{
-                x: idx % 2 === 0 ? -250 : 250, // alternate sides
-                opacity: 0,
-                scale: 1,
-              }}
+              initial={{ opacity: 0, scale: 0.8 }}
               animate={{
-                x: 0,
-                opacity: [0, 1, 1, 0], // appear → fuse → disappear
-                scale: [1, 1.2, 0.8, 0.5],
+                opacity: [0, 1, 0],
+                scale: [0.8, 1.6, 0.6],
               }}
               transition={{
-                delay: 0.3 + idx * 0.3, // staggered motion
-                duration: 1.6,
+                delay: queryProducts.length * 0.45 + 0.6,
+                duration: 2,
                 ease: 'easeInOut',
               }}
-              className="absolute flex items-center justify-center gap-2"
-            >
-              <img
-                src={product.url}
-                alt={product.name}
-                className="w-10 h-10 object-cover rounded-md border border-slate-600"
-              />
-              <p className="text-sm font-medium text-gray-300">{product.name}</p>
-            </motion.div>
-          ))}
+              className="absolute w-10 h-10 rounded-full bg-[#0EA5E9] blur-md"
+            />
+          </motion.div>
+        </section>
+      )}
 
-          {/* Fusion glow effect */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0.8, 1.4, 0.5],
-            }}
-            transition={{
-              delay: queryProducts.length * 0.3 + 0.5,
-              duration: 1.2,
-              ease: 'easeInOut',
-            }}
-            className="absolute w-10 h-10 rounded-full bg-blue-400 blur-md"
-          />
-          {/* {fusionDone && <span className="absolute w-fit  h-10 rounded-full " > Fusion Done </span>} */}
-        </motion.div>
-        
-      </section>
-      }
-
-      {/* 🔹 Recommendations section */}
+      {/* 🔹 Recommendations */}
       <section>
-        <h2 className="text-lg mt-4 font-semibold mb-3 text-slate-300">
+        <h2 className="text-lg mt-4 font-semibold mb-3 text-slate-700">
           Recommended for You
         </h2>
 

@@ -2,8 +2,9 @@ import './globals.css'
 import { ReactNode } from 'react'
 
 export const metadata = {
-  title: 'Hierarchical Fusion Recommender',
-  description: 'Product recommendation demo'
+  title: 'VisionFuse AI',
+  description: 'Smart product recommendations',
+icons: { icon: "/favicon.ico" }
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
