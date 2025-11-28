@@ -39,8 +39,8 @@ export default function Home() {
 
 	const router = useRouter();
 
-	const api = "http://localhost:8000";
-	// const api = process.env.NEXT_PUBLIC_API_URL;
+	// const api = "http://localhost:8000";
+	const api = process.env.NEXT_PUBLIC_API_URL;
 
 	useEffect(() => {
 		fetch("/products.json")
